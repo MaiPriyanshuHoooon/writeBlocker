@@ -18,6 +18,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const refreshGlobalBtn = document.getElementById('refreshGlobalBtn');
     
     const diskTableBody = document.getElementById('diskTableBody');
+    const internalDiskTableBody = document.getElementById('internalDiskTableBody');
     const refreshDisksBtn = document.getElementById('refreshDisksBtn');
     
     const toastEl = document.getElementById('toast');
@@ -139,11 +140,16 @@ document.addEventListener('DOMContentLoaded', () => {
             const disks = await res.json();
             
             diskTableBody.innerHTML = '';
+            internalDiskTableBody.innerHTML = '';
             
             if (!disks || disks.length === 0) {
-                diskTableBody.innerHTML = `<tr><td colspan="5" class="text-center text-muted">No USB disks detected</td></tr>`;
+                diskTableBody.innerHTML = `<tr><td colspan="6" class="text-center text-muted">No external disks detected</td></tr>`;
+                internalDiskTableBody.innerHTML = `<tr><td colspan="6" class="text-center text-muted">No internal disks detected</td></tr>`;
                 return;
             }
+
+            let externalCount = 0;
+            let internalCount = 0;
 
             disks.forEach(disk => {
                 const tr = document.createElement('tr');
@@ -156,8 +162,11 @@ document.addEventListener('DOMContentLoaded', () => {
                     ? `<button class="btn btn-sm btn-danger unblock-btn" data-num="${disk.number}"><i class="fa-solid fa-unlock"></i> Unblock</button>`
                     : `<button class="btn btn-sm btn-success block-btn" data-num="${disk.number}"><i class="fa-solid fa-lock"></i> Block</button>`;
 
+                const letterBadge = disk.letters ? `<span class="badge" style="background:rgba(255,255,255,0.1); border:1px solid rgba(255,255,255,0.2)">${disk.letters}</span>` : '<span class="text-muted">-</span>';
+
                 tr.innerHTML = `
                     <td><strong>#${disk.number}</strong></td>
+                    <td>${letterBadge}</td>
                     <td>${disk.name}</td>
                     <td>${disk.size_gb} GB</td>
                     <td>${statusBadge}</td>
@@ -168,8 +177,18 @@ document.addEventListener('DOMContentLoaded', () => {
                         </div>
                     </td>
                 `;
-                diskTableBody.appendChild(tr);
+                
+                if (disk.bus.toLowerCase() === 'usb' || disk.bus.toLowerCase() === '1394') {
+                    diskTableBody.appendChild(tr);
+                    externalCount++;
+                } else {
+                    internalDiskTableBody.appendChild(tr);
+                    internalCount++;
+                }
             });
+            
+            if (externalCount === 0) diskTableBody.innerHTML = `<tr><td colspan="6" class="text-center text-muted">No external drives detected</td></tr>`;
+            if (internalCount === 0) internalDiskTableBody.innerHTML = `<tr><td colspan="6" class="text-center text-muted">No internal drives detected</td></tr>`;
 
             // Attach event listeners to new buttons
             document.querySelectorAll('.block-btn').forEach(btn => {
@@ -183,7 +202,8 @@ document.addEventListener('DOMContentLoaded', () => {
             });
 
         } catch (err) {
-            diskTableBody.innerHTML = `<tr><td colspan="5" class="text-center text-danger">Error fetching disks</td></tr>`;
+            diskTableBody.innerHTML = `<tr><td colspan="6" class="text-center text-danger">Error fetching disks</td></tr>`;
+            internalDiskTableBody.innerHTML = `<tr><td colspan="6" class="text-center text-danger">Error fetching disks</td></tr>`;
         } finally {
             refreshDisksBtn.innerHTML = '<i class="fa-solid fa-rotate-right"></i> Refresh Drives';
             refreshDisksBtn.disabled = false;

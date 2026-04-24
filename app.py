@@ -34,7 +34,7 @@ def get_status():
 
 @app.route('/api/disks', methods=['GET'])
 def get_disks():
-    disks = write_blocker.get_usb_disks()
+    disks = write_blocker.get_all_disks()
     return jsonify(disks)
 
 @app.route('/api/set_global', methods=['POST'])

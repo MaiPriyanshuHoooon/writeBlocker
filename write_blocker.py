@@ -142,17 +142,18 @@ def _run_ps(script: str) -> tuple[str, str]:
     return result.stdout.strip(), result.stderr.strip()
 
 
-def get_usb_disks() -> list[dict]:
+def get_all_disks() -> list[dict]:
     """
-    Returns a list of currently connected USB/external disks:
-        [{'number': int, 'name': str, 'bus': str, 'size_gb': float, 'is_readonly': bool}]
+    Returns a list of all connected disks:
+        [{'number': int, 'name': str, 'bus': str, 'size_gb': float, 'is_readonly': bool, 'letters': str}]
     """
     if not is_windows():
         return []
 
     ps = (
-        "Get-Disk | Where-Object {$_.BusType -eq 'USB'} | "
-        "Select-Object Number, FriendlyName, BusType, Size, IsReadOnly | "
+        "Get-Disk | "
+        "Select-Object Number, FriendlyName, BusType, Size, IsReadOnly, "
+        "@{Name='DriveLetters';Expression={(Get-Partition -DiskNumber $_.Number | Where-Object DriveLetter | Select-Object -ExpandProperty DriveLetter) -join ','}} | "
         "ConvertTo-Csv -NoTypeInformation"
     )
     out, err = _run_ps(ps)
@@ -167,7 +168,7 @@ def get_usb_disks() -> list[dict]:
     # Skip header
     for line in lines[1:]:
         parts = [p.strip('"') for p in line.split(",")]
-        if len(parts) < 5:
+        if len(parts) < 6:
             continue
         try:
             size_bytes = int(parts[3]) if parts[3].isdigit() else 0
@@ -176,10 +177,14 @@ def get_usb_disks() -> list[dict]:
                 "name": parts[1],
                 "bus": parts[2],
                 "size_gb": round(size_bytes / (1024 ** 3), 2),
-                "is_readonly": parts[4].lower() == "true"
+                "is_readonly": parts[4].lower() == "true",
+                "letters": parts[5]
             })
         except (ValueError, IndexError):
             continue
+    
+    # Sort disks by number ascending (0, 1, 2...)
+    disks.sort(key=lambda x: x["number"])
     return disks
 
 

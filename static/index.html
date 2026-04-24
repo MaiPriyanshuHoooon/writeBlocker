@@ -70,8 +70,8 @@
                 <section class="panel glass disk-panel">
                     <div class="panel-header flex-between">
                         <div>
-                            <h3><i class="fa-solid fa-hard-drive"></i> Currently Connected Drives</h3>
-                            <p class="subtitle">Manage write access for drives that are already plugged in.</p>
+                            <h3><i class="fa-solid fa-hard-drive"></i> External & USB Drives</h3>
+                            <p class="subtitle">Manage write access for external drives that are already plugged in.</p>
                         </div>
                         <button id="refreshDisksBtn" class="btn btn-primary"><i class="fa-solid fa-rotate-right"></i> Refresh Drives</button>
                     </div>
@@ -81,6 +81,7 @@
                                 <thead>
                                     <tr>
                                         <th>Disk #</th>
+                                        <th>Partitions</th>
                                         <th>Friendly Name</th>
                                         <th>Size (GB)</th>
                                         <th>Status</th>
@@ -89,9 +90,38 @@
                                 </thead>
                                 <tbody id="diskTableBody">
                                     <tr>
-                                        <td colspan="5" class="text-center loading-cell">
+                                        <td colspan="6" class="text-center loading-cell">
                                             <i class="fa-solid fa-spinner fa-spin"></i> Scanning for devices...
                                         </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Internal Disk Controls -->
+                <section class="panel glass disk-panel">
+                    <div class="panel-header">
+                        <h3><i class="fa-solid fa-server"></i> Internal Devices (Advanced)</h3>
+                        <p class="subtitle text-warning"><i class="fa-solid fa-triangle-exclamation"></i> Warning: Blocking internal OS drives may cause severe system instability or crashes.</p>
+                    </div>
+                    <div class="panel-body">
+                        <div class="table-container">
+                            <table id="internalDiskTable">
+                                <thead>
+                                    <tr>
+                                        <th>Disk #</th>
+                                        <th>Partitions</th>
+                                        <th>Friendly Name</th>
+                                        <th>Size (GB)</th>
+                                        <th>Status</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="internalDiskTableBody">
+                                    <tr>
+                                        <td colspan="6" class="text-center text-muted">No internal disks detected</td>
                                     </tr>
                                 </tbody>
                             </table>
