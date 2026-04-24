@@ -128,10 +128,16 @@ def set_write_protect(enable: bool) -> dict:
 def _run_ps(script: str) -> tuple[str, str]:
     """Run a PowerShell snippet and return (stdout, stderr)."""
     # Force use of single quotes for PS commands internally where needed or bypass profile
+    kwargs = {
+        "capture_output": True,
+        "text": True
+    }
+    if is_windows():
+        kwargs["creationflags"] = subprocess.CREATE_NO_WINDOW
+
     result = subprocess.run(
-        ["powershell", "-NoProfile", "-NonInteractive", "-Command", script],
-        capture_output=True,
-        text=True
+        ["powershell", "-NoProfile", "-NonInteractive", "-WindowStyle", "Hidden", "-Command", script],
+        **kwargs
     )
     return result.stdout.strip(), result.stderr.strip()
 

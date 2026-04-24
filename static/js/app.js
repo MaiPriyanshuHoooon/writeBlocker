@@ -185,7 +185,7 @@ document.addEventListener('DOMContentLoaded', () => {
         } catch (err) {
             diskTableBody.innerHTML = `<tr><td colspan="5" class="text-center text-danger">Error fetching disks</td></tr>`;
         } finally {
-            refreshDisksBtn.innerHTML = '<i class="fa-solid fa-rotate-right"></i> Scan Disks';
+            refreshDisksBtn.innerHTML = '<i class="fa-solid fa-rotate-right"></i> Refresh Drives';
             refreshDisksBtn.disabled = false;
         }
     }

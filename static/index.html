@@ -22,12 +22,6 @@
                 <div class="nav-item active" data-view="dashboard">
                     <i class="fa-solid fa-gauge"></i> Dashboard
                 </div>
-                <div class="nav-item" data-view="logs">
-                    <i class="fa-solid fa-list-check"></i> Event Logs
-                </div>
-                <div class="nav-item" data-view="settings">
-                    <i class="fa-solid fa-gear"></i> Settings
-                </div>
             </nav>
             
             <div class="system-status glass" id="systemStatusPanel">
@@ -57,8 +51,8 @@
                 <!-- Global Controls -->
                 <section class="panel glass global-control-panel">
                     <div class="panel-header">
-                        <h3><i class="fa-solid fa-earth-americas"></i> Global Registry Protection</h3>
-                        <p class="subtitle">Modifies Windows Registry to prevent writes on all USB mass storage devices.</p>
+                        <h3><i class="fa-solid fa-earth-americas"></i> System-Wide USB Protection</h3>
+                        <p class="subtitle">Enable this to automatically block write access to ANY USB drive plugged into this computer.</p>
                     </div>
                     <div class="panel-body flex-between">
                         <div class="toggle-container">
@@ -76,10 +70,10 @@
                 <section class="panel glass disk-panel">
                     <div class="panel-header flex-between">
                         <div>
-                            <h3><i class="fa-solid fa-hard-drive"></i> Connected USB Disks</h3>
-                            <p class="subtitle">Hardware-level blocking for individual volumes via PowerShell.</p>
+                            <h3><i class="fa-solid fa-hard-drive"></i> Currently Connected Drives</h3>
+                            <p class="subtitle">Manage write access for drives that are already plugged in.</p>
                         </div>
-                        <button id="refreshDisksBtn" class="btn btn-primary"><i class="fa-solid fa-rotate-right"></i> Scan Disks</button>
+                        <button id="refreshDisksBtn" class="btn btn-primary"><i class="fa-solid fa-rotate-right"></i> Refresh Drives</button>
                     </div>
                     <div class="panel-body">
                         <div class="table-container">
