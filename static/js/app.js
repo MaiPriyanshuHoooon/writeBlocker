@@ -173,13 +173,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
             // Attach event listeners to new buttons
             document.querySelectorAll('.block-btn').forEach(btn => {
-                btn.addEventListener('click', () => setDiskReadonly(btn.dataset.num, true));
+                btn.addEventListener('click', (e) => setDiskReadonly(btn.dataset.num, true, e.currentTarget));
             });
             document.querySelectorAll('.unblock-btn').forEach(btn => {
-                btn.addEventListener('click', () => setDiskReadonly(btn.dataset.num, false));
+                btn.addEventListener('click', (e) => setDiskReadonly(btn.dataset.num, false, e.currentTarget));
             });
             document.querySelectorAll('.cycle-btn').forEach(btn => {
-                btn.addEventListener('click', () => cycleDisk(btn.dataset.num));
+                btn.addEventListener('click', (e) => cycleDisk(btn.dataset.num, e.currentTarget));
             });
 
         } catch (err) {
@@ -190,7 +190,11 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    async function setDiskReadonly(diskNumber, readonly) {
+    async function setDiskReadonly(diskNumber, readonly, btnElement) {
+        if (btnElement) {
+            btnElement.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Processing...';
+            btnElement.disabled = true;
+        }
         try {
             const res = await fetch('/api/set_disk', {
                 method: 'POST',
@@ -204,15 +208,27 @@ document.addEventListener('DOMContentLoaded', () => {
                 await fetchDisks(); // Refresh list immediately
             } else {
                 showToast(data.message, 'error');
+                if (btnElement) {
+                    btnElement.innerHTML = readonly ? '<i class="fa-solid fa-lock"></i> Block' : '<i class="fa-solid fa-unlock"></i> Unblock';
+                    btnElement.disabled = false;
+                }
             }
         } catch (err) {
             showToast('Request failed', 'error');
+            if (btnElement) {
+                btnElement.innerHTML = readonly ? '<i class="fa-solid fa-lock"></i> Block' : '<i class="fa-solid fa-unlock"></i> Unblock';
+                btnElement.disabled = false;
+            }
         }
     }
 
-    async function cycleDisk(diskNumber) {
+    async function cycleDisk(diskNumber, btnElement) {
+        if (btnElement) {
+            btnElement.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i>';
+            btnElement.disabled = true;
+        }
         try {
-            showToast(`Cycling disk #${diskNumber} offline/online...`, 'success');
+            showToast(`Cycling disk #${diskNumber} offline/online...`, 'info');
             const res = await fetch('/api/cycle_disk', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -225,9 +241,17 @@ document.addEventListener('DOMContentLoaded', () => {
                 setTimeout(fetchDisks, 1000);
             } else {
                 showToast(data.message, 'error');
+                if (btnElement) {
+                    btnElement.innerHTML = '<i class="fa-solid fa-power-off"></i>';
+                    btnElement.disabled = false;
+                }
             }
         } catch (err) {
             showToast('Cycle request failed', 'error');
+            if (btnElement) {
+                btnElement.innerHTML = '<i class="fa-solid fa-power-off"></i>';
+                btnElement.disabled = false;
+            }
         }
     }
 
