@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Write Blocker - Forensic Tool</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="app-container">
+        
+        <!-- Sidebar -->
+        <aside class="sidebar glass">
+            <div class="logo-container">
+                <i class="fa-solid fa-shield-halved logo-icon"></i>
+                <h1 class="logo-text">Write Blocker</h1>
+            </div>
+            
+            <nav class="nav-menu">
+                <div class="nav-item active" data-view="dashboard">
+                    <i class="fa-solid fa-gauge"></i> Dashboard
+                </div>
+                <div class="nav-item" data-view="logs">
+                    <i class="fa-solid fa-list-check"></i> Event Logs
+                </div>
+                <div class="nav-item" data-view="settings">
+                    <i class="fa-solid fa-gear"></i> Settings
+                </div>
+            </nav>
+            
+            <div class="system-status glass" id="systemStatusPanel">
+                <div class="status-row">
+                    <span class="status-label">OS:</span>
+                    <span class="status-value" id="osType">Detecting...</span>
+                </div>
+                <div class="status-row">
+                    <span class="status-label">Privilege:</span>
+                    <span class="status-value" id="adminStatus">Detecting...</span>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            
+            <header class="top-bar">
+                <h2>Write Blocker Dashboard</h2>
+                <div class="global-status glass" id="globalStatusBanner">
+                    <div class="status-indicator" id="globalStatusIndicator"></div>
+                    <span id="globalStatusText">Checking Global Status...</span>
+                </div>
+            </header>
+
+            <div class="content-area">
+                <!-- Global Controls -->
+                <section class="panel glass global-control-panel">
+                    <div class="panel-header">
+                        <h3><i class="fa-solid fa-earth-americas"></i> Global Registry Protection</h3>
+                        <p class="subtitle">Modifies Windows Registry to prevent writes on all USB mass storage devices.</p>
+                    </div>
+                    <div class="panel-body flex-between">
+                        <div class="toggle-container">
+                            <label class="switch">
+                                <input type="checkbox" id="globalBlockToggle" disabled>
+                                <span class="slider round"></span>
+                            </label>
+                            <span class="toggle-label" id="globalToggleLabel">Enable Write Block</span>
+                        </div>
+                        <button id="refreshGlobalBtn" class="btn btn-secondary"><i class="fa-solid fa-arrows-rotate"></i> Refresh</button>
+                    </div>
+                </section>
+
+                <!-- Disk Controls -->
+                <section class="panel glass disk-panel">
+                    <div class="panel-header flex-between">
+                        <div>
+                            <h3><i class="fa-solid fa-hard-drive"></i> Connected USB Disks</h3>
+                            <p class="subtitle">Hardware-level blocking for individual volumes via PowerShell.</p>
+                        </div>
+                        <button id="refreshDisksBtn" class="btn btn-primary"><i class="fa-solid fa-rotate-right"></i> Scan Disks</button>
+                    </div>
+                    <div class="panel-body">
+                        <div class="table-container">
+                            <table id="diskTable">
+                                <thead>
+                                    <tr>
+                                        <th>Disk #</th>
+                                        <th>Friendly Name</th>
+                                        <th>Size (GB)</th>
+                                        <th>Status</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="diskTableBody">
+                                    <tr>
+                                        <td colspan="5" class="text-center loading-cell">
+                                            <i class="fa-solid fa-spinner fa-spin"></i> Scanning for devices...
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </main>
+        
+        <!-- Toast Notification -->
+        <div id="toast" class="toast glass">
+            <i class="fa-solid fa-circle-info toast-icon"></i>
+            <span class="toast-message" id="toastMessage">Notification message</span>
+        </div>
+    </div>
+
+    <script src="/static/js/app.js"></script>
+</body>
+</html>
